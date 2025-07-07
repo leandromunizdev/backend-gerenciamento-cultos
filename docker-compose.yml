@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  # Banco de dados PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: cultos-postgres
+    environment:
+      POSTGRES_DB: sistema_cultos
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - cultos-network
+    restart: unless-stopped
+
+  # Backend Node.js
+  backend:
+    build:
+      context: ../backend-gerenciamento-cultos
+      dockerfile: Dockerfile
+    container_name: cultos-backend
+    environment:
+      NODE_ENV: production
+      PORT: 3008
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: sistema_cultos
+      DB_USER: postgres
+      DB_PASSWORD: password
+      JWT_SECRET: sua_chave_jwt_super_secreta_aqui
+      JWT_EXPIRES_IN: 24h
+    ports:
+      - "3008:3008"
+    depends_on:
+      - postgres
+    networks:
+      - cultos-network
+    restart: unless-stopped
+    volumes:
+      - ./backend/uploads:/app/uploads
+
+  # Frontend React
+  frontend:
+    build:
+      context: ../frontend-gerenciamento-cultos
+      dockerfile: Dockerfile
+    container_name: cultos-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - cultos-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  cultos-network:
+    driver: bridge

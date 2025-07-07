@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Iniciar Debug do Node",
+      "program": "${workspaceFolder}/src/server.js", // Altere para o arquivo principal do seu projeto
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}
