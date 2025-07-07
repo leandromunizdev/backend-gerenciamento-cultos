@@ -28,5 +28,5 @@ USER nodejs
 EXPOSE 3008
 
 # Comando de inicialização
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
 
